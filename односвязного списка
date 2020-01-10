@@ -1,0 +1,121 @@
+#include<iostream>
+#define Debug
+template<class T>
+class List
+{
+	struct Node
+	{
+		T Data;
+		Node* next;
+		Node(const T& data, Node* n) :Data{ data }, next{ n }{};
+	};
+	int size;
+	Node* head;
+	Node* tail;
+public:
+	List() :size{ 0 }, head{ nullptr }, tail{ nullptr }{};
+	List(T data, int s) :size{ s }
+	{
+		head = tail = new Node{ data, nullptr };
+		Node* N = head;
+		for (int i = 0; i < size; (i == 0 ? head->next = tail = new Node{ data,tail } : N->next = tail = new Node{ data,tail }), ++i);
+	}
+	void Add(T data)
+	{
+		if (head == nullptr)
+		{
+			tail = head = new Node{ data,nullptr };
+			size++;
+		}
+		else
+		{
+			Node* N = head;
+			for (; N->next != nullptr; N = N->next);
+			N->next = tail = new Node{ data, nullptr };
+			size++;
+		}
+	}
+	void AddFront(T data)
+	{
+		head = new Node{ data,head };
+		size++;
+	}
+	void print()
+	{
+		Node* N = head;
+		std::cout << "\n";
+		for (; N != nullptr; N = N->next)
+		{
+			std::cout << N->Data << "\n";
+		}
+	}
+	T& operator [](int num)
+	{
+		Node* N = head;
+		for (int i = 0; i < size and i < num and N->next != nullptr; ++i, N = N->next) {
+#ifndef DEBUG
+			std::cout << "\n" << size << " ";
+			std::cout << " " << i << " ";
+			std::cout << " " << N->Data << "\n";
+
+
+#endif // DEBUG
+		}
+		return N->Data;
+	}
+	T pop_back()
+	{
+		return tail->Data;
+	}
+	T pop_front()
+	{
+		return head->Data;
+	}
+	void delete_back()
+	{
+		if (tail != head)
+		{
+			Node* N = head;
+			for (; N->next != tail; N = N->next);
+			N->next = nullptr;
+			delete tail;
+			tail = N;
+			return;
+		}
+	}
+	void delete_front()
+	{
+		if (head->next != nullptr)
+		{
+			Node* N = head->next;
+			delete head;
+			head = N;
+			return;
+		}
+	}
+	int getSize()
+	{
+		return size;
+	}
+	friend T& operator +(List& lhs, List& rhs);
+};
+template<class T>
+T& operator+ (List<T>& lhs, List<T>& rhs)
+{
+	List<T> copy, work;
+	work.AddFront(lhs.pop_front());
+	for (work; work = work->next)
+	{
+		copy.Add(work->data);
+	}
+	work.AddFront(rhs.pop_front());
+	for (work; work = work->next)
+	{
+		copy.Add(work->data);
+	}
+	return copy;
+}
+int main()
+{
+
+}
