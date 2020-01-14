@@ -25,20 +25,19 @@ public:
 		if (head == nullptr)
 		{
 			tail = head = new Node{ data,nullptr };
-			size++;
 		}
 		else
 		{
 			Node* N = head;
 			for (; N->next != nullptr; N = N->next);
 			N->next = tail = new Node{ data, nullptr };
-			size++;
 		}
+		++size;
 	}
 	void AddFront(T data)
 	{
 		head = new Node{ data,head };
-		size++;
+		++size;
 	}
 	void print()
 	{
@@ -80,7 +79,7 @@ public:
 			N->next = nullptr;
 			delete tail;
 			tail = N;
-			return;
+			--size;
 		}
 	}
 	void delete_front()
@@ -90,7 +89,7 @@ public:
 			Node* N = head->next;
 			delete head;
 			head = N;
-			return;
+			--size;
 		}
 	}
 	int getSize()
