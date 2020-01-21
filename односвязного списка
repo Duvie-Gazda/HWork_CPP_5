@@ -150,11 +150,6 @@ public:
 	{
 		List1Side<T> copy;
 		Node* work;
-/*		work = lhs.head;
-		for (; work; work = work->next)
-		{
-			copy.Add(work->Data);
-		}*/
 		work = lhs.head;
 		for (; work; work = work->next)
 		{
