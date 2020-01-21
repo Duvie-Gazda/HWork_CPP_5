@@ -1,7 +1,6 @@
-#include<iostream>
-#define Debug
+#include <iostream>
 template<class T>
-class List
+class List1Side
 {
 	struct Node
 	{
@@ -13,8 +12,18 @@ class List
 	Node* head;
 	Node* tail;
 public:
-	List() :size{ 0 }, head{ nullptr }, tail{ nullptr }{};
-	List(T data, int s) :size{ s }
+	List1Side() :size{ 0 }, head{ nullptr }, tail{ nullptr }{};
+	Node* copy()
+	{
+		Node* obj = head;
+		List1Side copy;
+		for (; obj; obj = obj->next)
+		{
+			copy.Add(obj->Data);
+		}
+		return copy.head;
+	}
+	List1Side(T data, int s) :size{ s }
 	{
 		head = tail = new Node{ data, nullptr };
 		Node* N = head;
@@ -29,13 +38,19 @@ public:
 		else
 		{
 			Node* N = head;
-			for (; N->next != nullptr; N = N->next);
+			for (; N->next; N = N->next);
 			N->next = tail = new Node{ data, nullptr };
 		}
 		++size;
 	}
 	void AddFront(T data)
 	{
+		if (head == nullptr)
+		{
+			tail = head = new Node{ data,nullptr };
+			++size;
+			return;
+		}
 		head = new Node{ data,head };
 		++size;
 	}
@@ -43,7 +58,7 @@ public:
 	{
 		Node* N = head;
 		std::cout << "\n";
-		for (; N != nullptr; N = N->next)
+		for (; N; N = N->next)
 		{
 			std::cout << N->Data << "\n";
 		}
@@ -51,14 +66,7 @@ public:
 	T& operator [](int num)
 	{
 		Node* N = head;
-		for (int i = 0; i < size and i < num and N->next != nullptr; ++i, N = N->next) {
-#ifndef DEBUG
-			std::cout << "\n" << size << " ";
-			std::cout << " " << i << " ";
-			std::cout << " " << N->Data << "\n";
-
-
-#endif // DEBUG
+		for (int i = 0; i < size and i < num and N->next; ++i, N = N->next) {
 		}
 		return N->Data;
 	}
@@ -68,7 +76,10 @@ public:
 	}
 	T pop_front()
 	{
-		return head->Data;
+		if (head)
+		{
+			return head->Data;
+		}
 	}
 	void delete_back()
 	{
@@ -84,37 +95,87 @@ public:
 	}
 	void delete_front()
 	{
+		if (!head)
+		{
+			return;
+		}
 		if (head->next != nullptr)
 		{
 			Node* N = head->next;
 			delete head;
 			head = N;
 			--size;
+			return;
+		}
+		if (head)
+		{
+			delete head;
+			head = tail = nullptr;
+			--size;
+		}
+	}
+	void  clean()
+	{
+		while (head)
+		{
+			delete_back();
 		}
 	}
 	int getSize()
 	{
 		return size;
 	}
-	friend T& operator +(List& lhs, List& rhs);
+	void operator = (List1Side<T> lhs)
+	{
+		clean();
+		head = lhs.copy();
+	}
+	friend List1Side<T> operator +(List1Side& lhs, List1Side& rhs)
+	{
+		List1Side<T> copy;
+		Node* work;
+		work = lhs.head;
+		for (; work; work = work->next)
+		{
+			copy.Add(work->Data);
+		}
+		work = rhs.head;
+		for (; work; work = work->next)
+		{
+			copy.Add(work->Data);
+		}
+		return copy;
+	}
+	friend List1Side<T> operator *(List1Side& lhs, List1Side& rhs)
+	{
+		List1Side<T> copy;
+		Node* work;
+/*		work = lhs.head;
+		for (; work; work = work->next)
+		{
+			copy.Add(work->Data);
+		}*/
+		work = lhs.head;
+		for (; work; work = work->next)
+		{
+			for (Node* cc = rhs.head; cc; cc = cc->next)
+			{
+				if (cc->Data == work->Data)
+				{
+					copy.Add(work->Data);
+				}
+			}
+		}		
+		return copy;
+	}
 };
-template<class T>
-T& operator+ (List<T>& lhs, List<T>& rhs)
-{
-	List<T> copy, work;
-	work.AddFront(lhs.pop_front());
-	for (work; work = work->next)
-	{
-		copy.Add(work->data);
-	}
-	work.AddFront(rhs.pop_front());
-	for (work; work = work->next)
-	{
-		copy.Add(work->data);
-	}
-	return copy;
-}
 int main()
 {
-
+	List1Side<int> list1, list2, list3;
+	list1.Add(1);
+	list1.Add(2);
+	list2.Add(2);
+	list2.Add(1);
+	list3 = list2 * list1;
+	list3.print();
 }
