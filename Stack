@@ -1,5 +1,4 @@
-#include<iostream>
-#define Debug
+#include <iostream>
 template<class T>
 class List1Side
 {
@@ -58,13 +57,6 @@ public:
 	{
 		Node* N = head;
 		for (int i = 0; i < size and i < num and N->next; ++i, N = N->next) {
-#ifndef DEBUG
-			std::cout << "\n" << size << " ";
-			std::cout << " " << i << " ";
-			std::cout << " " << N->Data << "\n";
-
-
-#endif // DEBUG
 		}
 		return N->Data;
 	}
@@ -123,14 +115,41 @@ T& operator+ (List1Side<T>& lhs, List1Side<T>& rhs)
 {
 	List1Side<T> copy, work;
 	work.AddFront(lhs.pop_front());
-	for (;work; work = work->next)
+	for (; work; work = work->next)
 	{
 		copy.Add(work->data);
 	}
 	work.AddFront(rhs.pop_front());
-	for (;work; work = work->next)
+	for (; work; work = work->next)
 	{
 		copy.Add(work->data);
 	}
 	return copy;
+}
+
+template <class T>
+class MyStack
+{
+	List1Side<T> list;
+public:
+	MyStack(const T& copy) :list{ copy } {};
+	MyStack() = default;
+	void push(const T& copy)
+	{
+		list.AddFront(copy);
+	}
+	T& pop()
+	{
+		T copy = list.pop_front();
+		list.delete_front();
+		return copy;
+	}
+};
+int main()
+{
+	MyStack<int> a;
+	a.push(3);
+	a.push(2);
+	std::cout << a.pop();
+	std::cout << a.pop();
 }
