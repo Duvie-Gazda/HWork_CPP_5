@@ -1,7 +1,7 @@
 #include<iostream>
 #define Debug
 template<class T>
-class List
+class List1Side
 {
 	struct Node
 	{
@@ -13,8 +13,8 @@ class List
 	Node* head;
 	Node* tail;
 public:
-	List() :size{ 0 }, head{ nullptr }, tail{ nullptr }{};
-	List(T data, int s) :size{ s }
+	List1Side() :size{ 0 }, head{ nullptr }, tail{ nullptr }{};
+	List1Side(T data, int s) :size{ s }
 	{
 		head = tail = new Node{ data, nullptr };
 		Node* N = head;
@@ -25,26 +25,31 @@ public:
 		if (head == nullptr)
 		{
 			tail = head = new Node{ data,nullptr };
-			size++;
 		}
 		else
 		{
 			Node* N = head;
-			for (; N->next != nullptr; N = N->next);
+			for (; N->next; N = N->next);
 			N->next = tail = new Node{ data, nullptr };
-			size++;
 		}
+		++size;
 	}
 	void AddFront(T data)
 	{
+		if (head == nullptr)
+		{
+			tail = head = new Node{ data,nullptr };
+			++size;
+			return;
+		}
 		head = new Node{ data,head };
-		size++;
+		++size;
 	}
 	void print()
 	{
 		Node* N = head;
 		std::cout << "\n";
-		for (; N != nullptr; N = N->next)
+		for (; N; N = N->next)
 		{
 			std::cout << N->Data << "\n";
 		}
@@ -52,7 +57,7 @@ public:
 	T& operator [](int num)
 	{
 		Node* N = head;
-		for (int i = 0; i < size and i < num and N->next != nullptr; ++i, N = N->next) {
+		for (int i = 0; i < size and i < num and N->next; ++i, N = N->next) {
 #ifndef DEBUG
 			std::cout << "\n" << size << " ";
 			std::cout << " " << i << " ";
@@ -69,7 +74,10 @@ public:
 	}
 	T pop_front()
 	{
-		return head->Data;
+		if (head)
+		{
+			return head->Data;
+		}
 	}
 	void delete_back()
 	{
@@ -80,49 +88,49 @@ public:
 			N->next = nullptr;
 			delete tail;
 			tail = N;
-			return;
+			--size;
 		}
 	}
 	void delete_front()
 	{
+		if (!head)
+		{
+			return;
+		}
 		if (head->next != nullptr)
 		{
 			Node* N = head->next;
 			delete head;
 			head = N;
+			--size;
 			return;
+		}
+		if (head)
+		{
+			delete head;
+			head = tail = nullptr;
+			--size;
 		}
 	}
 	int getSize()
 	{
 		return size;
 	}
+	friend T& operator +(List1Side& lhs, List1Side& rhs);
 };
-template <class  T>
-class Stack
+template<class T>
+T& operator+ (List1Side<T>& lhs, List1Side<T>& rhs)
 {
-	List<T> Data;
-	size_t num;
-	int size;
-public:
-	Stack() :Data{}, num{ Data.getSize() }{};
-	size_t getNum()
+	List1Side<T> copy, work;
+	work.AddFront(lhs.pop_front());
+	for (;work; work = work->next)
 	{
-		return num;
+		copy.Add(work->data);
 	}
-	T& get()
+	work.AddFront(rhs.pop_front());
+	for (;work; work = work->next)
 	{
-		T copy{ Data.pop_front() };
-		--num;
-		Data.delete_front();
-		return copy;
+		copy.Add(work->data);
 	}
-	void put(T& data)
-	{
-		Data.AddFront(data);
-		++num;
-	}
-};
-int main()
-{
+	return copy;
 }
