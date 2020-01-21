@@ -83,6 +83,10 @@ public:
 	}
 	void delete_back()
 	{
+		if (!head)
+		{
+			return;
+		}
 		if (tail != head)
 		{
 			Node* N = head;
@@ -91,6 +95,13 @@ public:
 			delete tail;
 			tail = N;
 			--size;
+		}
+		if (tail)
+		{
+			delete tail;
+			head = tail = nullptr;
+			--size;
+			return;
 		}
 	}
 	void delete_front()
@@ -160,7 +171,7 @@ public:
 					copy.Add(work->Data);
 				}
 			}
-		}		
+		}
 		return copy;
 	}
 };
@@ -171,6 +182,7 @@ int main()
 	list1.Add(2);
 	list2.Add(2);
 	list2.Add(1);
+	list1 = list2 + list1;
 	list3 = list2 * list1;
 	list3.print();
 }
