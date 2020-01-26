@@ -1,0 +1,183 @@
+#include<iostream>
+template <class  T>
+class MyList
+{
+	struct Node
+	{
+		T& data;
+		Node* next;
+		Node* prev;
+		Node(const T& data_, Node* next_ = nullptr, Node* prev_ = nullptr) :data{ data_ }, next{ next_ }, prev{ prev_ }{};
+	};
+	Node* getNode(size_t idx)
+	{
+		Node* curr;
+		size_t cnt{ 0 };
+		if (idx > (size - 1) / 2)
+		{
+			for (curr = tail, cnt = size; cnt > idx; curr = curr->prev, --cnt);
+		}
+		else
+		{
+			for (curr = head; cnt < idx; curr = curr->next, ++cnt);
+		}
+		return curr;
+	}
+	size_t size;
+	Node* head,* tail;
+public:
+	MyList() :head{ nullptr }, tail{ nullptr }, size{ 0 }{};
+	size_t getSize() { return size; }
+	void push_back(const T& data_)
+	{
+		if (!head)
+		{
+			tail = head = new Node{ data_ };
+		}
+		else
+		{
+			tail->next = new Node{ data_, nullptr, tail };
+		}
+		++size;
+	}
+	void push_front(const T& data_)
+	{
+		if (!head)
+		{
+			tail = head = new Node{ data_ };
+		}
+		else
+		{
+			head->prew = new Node{ data_,head, };
+			head = head->prew;
+		}
+		++size;
+	}
+	void pop_front()
+	{
+		if (head)
+		{
+			head->next->prew = nullptr;
+		}
+		Node tmp{ head->next };
+		delete head;
+		head = tmp;
+		--size;
+		if (!head)
+		{
+			tail = head;
+		}
+	}
+	void pop_back()
+	{
+		if (tail)
+		{
+			if (tail->prev)
+			{
+				tail->prev->next = nullptr;
+			}
+		}
+		Node* tmp{ tail->prev };
+		delete tail;
+		tail = tmp;
+		--size;
+		if (!tail)
+		{
+			head = tail;
+		}
+	}
+	void insertAt(size_t idx, const T& data_)
+	{
+		Node* curr{ getNode(idx) };
+		if (size == 1)
+		{
+			push_back(data_);
+			return;
+		}
+		Node* newNode = new Node{ data_,curr->next,curr };
+		curr->next = newNode;
+		newNode->next->prev = newNode;
+		++size;
+	}
+	void deleteAt(size_t idx)
+	{
+		Node* curr{ getNode(idx) };
+		if (size == 1)
+		{
+			head = tail = nullptr;
+			size = 0;
+			return;
+		}
+		if (curr->prev)
+		{
+			curr->prev->next = curr->next;
+		}
+		else
+		{
+			head = curr->next;
+		}
+		if (curr->next)
+		{
+			curr->next->prev = curr->prev;
+		}
+		else
+		{
+			tail = curr->prev;
+		}
+		--size;
+		delete curr;
+
+	}
+	Node* getHead()
+	{
+		return head;
+	}
+	Node* getTail()
+	{
+		return tail;
+	}
+	T& operator [](size_t idx) { return getNode(idx)->data; }
+	Node* copy()
+	{
+		Node* obj = head;
+		List1Side copy;
+		for (; obj; obj = obj->next)
+		{
+			copy.Add(obj->Data);
+		}
+		return copy.head;
+	}
+	friend List1Side<T> operator +(List1Side& lhs, List1Side& rhs)
+	{
+		List1Side<T> copy;
+		Node* work;
+		work = lhs.head;
+		for (; work; work = work->next)
+		{
+			copy.Add(work->Data);
+		}
+		work = rhs.head;
+		for (; work; work = work->next)
+		{
+			copy.Add(work->Data);
+		}
+		return copy;
+	}
+	friend List1Side<T> operator *(List1Side& lhs, List1Side& rhs)
+	{
+		List1Side<T> copy;
+		Node* work;
+		work = lhs.head;
+		for (; work; work = work->next)
+		{
+			for (Node* cc = rhs.head; cc; cc = cc->next)
+			{
+				if (cc->Data == work->Data)
+				{
+					copy.Add(work->Data);
+				}
+			}
+		}
+		return copy;
+	}
+};
