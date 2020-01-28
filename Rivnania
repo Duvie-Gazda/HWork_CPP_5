@@ -1,0 +1,68 @@
+#include <iostream>
+class Rivniana
+{
+protected:
+    double a;
+    double b;
+public:
+    Rivniana()
+    {
+        std::cout << "Enter A = ";
+        std::cin >> a;
+        std::cout << "Enter B = ";
+        std::cin >> b;
+    }
+    virtual void Korin() = 0;
+};
+class LineineRivn : public Rivniana
+{
+public:
+    LineineRivn()
+    {
+        std::cout << "You entered " << a << "x + " << b << " = 0" << std::endl;
+    }
+    void Korin() override
+    {
+        double x;
+        x = -b / a;
+        std::cout << "Koren uravneniya raven x = " << x << std::endl;
+    }
+};
+class KvadratneRivn : public Rivniana
+{
+    double c;
+public:
+    KvadratneRivn()
+    {
+        std::cout << "Enter C = ";
+        std::cin >> c;
+        std::cout << "You entered " << a << "(x*x) + " << b << "x +" << c << " = 0" << std::endl;
+    }
+    void Korin() override
+    {
+        double x1, x2;
+        double D = b * b - 4 * a * c;
+        if (D < 0)
+        {
+            std::cout << "x nalez poroz mnozini" << std::endl << std::endl;
+            return;
+        }
+        if (D == 0)
+        {
+            x1 = x2 = -b / (2 * a);
+        }
+        else
+        {
+            x1 = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
+            x2 = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
+        }
+        std::cout << "x1 = " << x1 << ", x2 = " << x2 << std::endl;
+    }
+};
+int main()
+{
+    LineineRivn i;
+    i.Korin();
+    KvadratneRivn g;
+    g.Korin();
+}
