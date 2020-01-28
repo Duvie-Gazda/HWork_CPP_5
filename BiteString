@@ -1,0 +1,116 @@
+#include <iostream>
+class String
+{
+protected:
+	char* str;
+public:
+	String(const char* str_)
+	{
+		str = new char[strlen(str_) + 1];
+		strcpy_s(str, strlen(str_) + 1, str_);
+	}
+	String(const String& copy)
+	{
+		str = new char[strlen(copy.str) + 1];
+		strcpy_s(str, strlen(copy.str) + 1, copy.str);
+	}
+	String() : String(" ") {};
+	~String()
+	{
+		delete[] str;
+	}
+	void operator +=(String& rhs)
+	{
+		*this = *this + rhs;
+	}
+	int getSize()
+	{
+		return strlen(str);
+	}
+	void clear()
+	{
+		delete[] str;
+		str = new char[1]{""};
+	}
+	virtual char* plus( String& rhs)
+	{
+		char* copy = new char[strlen(str) + strlen(rhs.str) + 1];
+		int num = strlen(str) + 1;
+		for (int i = 0; i <= num; ++i)
+		{
+			copy[i] = str[i];
+		}
+		num = strlen(rhs.str) + 1;
+		for (int i = strlen(str), d = 0; d < num; ++i, ++d)
+		{
+			copy[i] = rhs.str[d];
+		}
+		return copy;
+	}
+	virtual void operator = (const String& copy);
+	friend const String operator +(String& lhs, String& rhs);
+	friend std::ostream& operator<<(std::ostream& out, String& str);
+	friend std::istream& operator>>(std::istream& in, String& str);
+	friend bool operator == (const String& lhs, const String& rhs);
+	friend bool operator != (const String& lhs, const String& rhs);
+};
+void String :: operator = (const String& copy)
+{
+	if (strlen(str) >= strlen(copy.str))
+	{
+		strcpy_s(str, strlen(copy.str) + 1, copy.str);
+	}
+	else
+	{
+		delete[] str;
+		str = new char[strlen(copy.str) + 1];
+		strcpy_s(str, strlen(copy.str) + 1, copy.str);
+	}
+}
+bool operator ==(const String& lhs, const String& rhs)
+{
+	return !(strcmp(lhs.str, rhs.str));
+}
+bool operator !=(const String& lhs, const String& rhs)
+{
+	return (strcmp(lhs.str, rhs.str));
+}
+const String operator +( String& lhs, String& rhs)
+{
+	return String(lhs.plus(rhs));
+}
+std::istream& operator>>(std::istream& in, String& str)
+{
+	char d[900];
+	in >> d;
+	String copy{ d };
+	str = copy;
+	return in;
+}
+std::ostream& operator<<(std::ostream& out, String& str)
+{
+	return 	out << str.str;
+}
+class BiteString:public String
+{
+public:
+	BiteString(const String& copy) :String(copy) { perevirka(); };
+	BiteString() :BiteString("") {};
+	BiteString(const BiteString& copy) :String(copy){};
+	~BiteString() { delete[] str; }
+	void perevirka()
+	{
+		for (int i = 0; i < getSize(); ++i)
+		{
+			if ((str[i] != '1')and(str[i] != '0'))
+			{
+				clear();
+			}
+		}
+	}
+};
+int main()
+{
+	BiteString str{ "00001" }, str2{ "00000" };
+	std::cout << str;
+}
