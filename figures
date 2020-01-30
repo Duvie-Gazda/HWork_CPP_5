@@ -14,10 +14,10 @@ protected:
 	int straight;
 public:
 	Shape(int str, int x, int y) :straight{ str }, p{ x,y } {  };
-	virtual void Save() 
+	virtual void Save(std::string file = "h.txt") 
 	{
 		std::ofstream out;
-		out.open("h.txt");
+		out.open(file);
 		if (!out.is_open())
 		{
 			std::cout << "\nERROR\n";
@@ -29,10 +29,10 @@ public:
 		out.close();
 	};
 	virtual void Show() { std::cout << "Point X : " << p.X << "\n      Y : " << p.Y << std :: endl; };
-	virtual void Load() 
+	virtual void Load(std ::string file = "h.txt") 
 	{
 		std::ifstream in;
-		in.open("h.txt");
+		in.open(file);
 		if (!in.is_open())
 		{
 			std::cout << "\nERROR\n";
@@ -59,6 +59,22 @@ public:
 		std::cout << "length  = " << length << std::endl;
 
 	}
+	virtual void Save(std::string file = "Square.txt")override
+	{
+		if (file == "h.txt")
+		{
+			file = "Square.txt";
+		}
+		Shape::Save(file);
+	}
+	virtual void Load(std::string file = "Square.txt")override
+	{
+		if (file == "h.txt")
+		{
+			file = "Square.txt";
+		}
+		Shape::Load(file);
+	}
 };
 class Circle : public Shape
 {
@@ -71,6 +87,22 @@ public:
 		Shape::Show();
 		std::cout << "Circle radius  = " << radius << std::endl;
 	}
+	virtual void Save(std::string file = "Circle.txt")override
+	{
+		if (file == "h.txt")
+		{
+			file = "Circle.txt";
+		}
+		Shape::Save(file);
+	}
+	virtual void Load(std::string file = "Circle.txt")override
+	{
+		if (file == "h.txt")
+		{
+			file = "Circle.txt";
+		}
+		Shape::Load(file);
+	}
 };
 class Rectangle: public Shape
 {
@@ -78,10 +110,14 @@ class Rectangle: public Shape
 	int wall2;
 public:
 	Rectangle(int s2,int size = 0, int x = 0, int y = 0) :Shape(size, x, y)	, wall2{ s2}{};
-	virtual void Load() override
+	virtual void Load(std::string file = "Rectangle.txt") override
 	{
+		if (file == "h.txt")
+		{
+			file = "Rectangle.txt";
+		}
 		std::ifstream in;
-		in.open("h.txt");
+		in.open(file);
 		if (!in.is_open())
 		{
 			std::cout << "\nERROR\n";
@@ -99,10 +135,14 @@ public:
 		Shape::Show();
 		std::cout << "wall 1 = " << wall1 << "\nwall 2 = " << wall2<< std::endl;
 	}
-	virtual void Save()override
+	virtual void Save(std::string hfile = "Rectangle.txt") override
 	{
+		if (hfile == "h.txt")
+		{
+			hfile = "Rectangle.txt";
+		}
 		std::ofstream out;
-		out.open("h.txt");
+		out.open(hfile);
 		if (!out.is_open())
 		{
 			std::cout << "\nERROR\n";
