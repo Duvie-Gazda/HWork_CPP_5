@@ -1,0 +1,132 @@
+#include<iostream>
+#include<fstream>
+class Point
+{
+public:
+	int X;
+	int Y;
+	Point(int x, int y) : X{ x }, Y{ y }{};
+};
+class Shape
+{
+protected:
+	Point p;
+	int straight;
+public:
+	Shape(int str, int x, int y) :straight{ str }, p{ x,y } {  };
+	virtual void Save() 
+	{
+		std::ofstream out;
+		out.open("h.txt");
+		if (!out.is_open())
+		{
+			std::cout << "\nERROR\n";
+		}
+		else
+		{
+			out << p.X << " "<< p.Y<< " " << straight << std:: endl;
+		}
+		out.close();
+	};
+	virtual void Show() { std::cout << "Point X : " << p.X << "\n      Y : " << p.Y << std :: endl; };
+	virtual void Load() 
+	{
+		std::ifstream in;
+		in.open("h.txt");
+		if (!in.is_open())
+		{
+			std::cout << "\nERROR\n";
+			p.X = p.Y = straight = 0;
+		}
+		else
+		{
+			in >> p.X >> p.Y >> straight;
+		}
+		in.close();
+	};
+	virtual ~Shape() = 0;
+};
+Shape:: ~Shape() {};
+class Square : public Shape
+{
+	int& length = straight;
+public:
+	Square(int size = 0, int x =0, int y = 0) :Shape(size,x,y) {};
+	virtual void Show()override
+	{
+		std::cout << "Left point\n";
+		Shape::Show();
+		std::cout << "length  = " << length << std::endl;
+
+	}
+};
+class Circle : public Shape
+{
+	int& radius = straight;
+public:
+	Circle(int size = 0,int x = 0, int y = 0):Shape(size,x,y){};
+	virtual void Show()override
+	{
+		std::cout << "Center point\n";
+		Shape::Show();
+		std::cout << "Circle radius  = " << radius << std::endl;
+	}
+};
+class Rectangle: public Shape
+{
+	int& wall1 = straight;
+	int wall2;
+public:
+	Rectangle(int s2,int size = 0, int x = 0, int y = 0) :Shape(size, x, y)	, wall2{ s2}{};
+	virtual void Load() override
+	{
+		std::ifstream in;
+		in.open("h.txt");
+		if (!in.is_open())
+		{
+			std::cout << "\nERROR\n";
+			p.X = p.Y = wall1 = wall2 = 0;
+		}
+		else
+		{
+			in >> p.X >> p.Y >> wall1 >> wall2;
+		}
+		in.close();
+	}
+	virtual void Show()override
+	{
+		std::cout << "Center point\n";
+		Shape::Show();
+		std::cout << "wall 1 = " << wall1 << "\nwall 2 = " << wall2<< std::endl;
+	}
+	virtual void Save()override
+	{
+		std::ofstream out;
+		out.open("h.txt");
+		if (!out.is_open())
+		{
+			std::cout << "\nERROR\n";
+		}
+		else
+		{
+			out << p.X <<" "<< p.Y<< " " << wall1<< " " << wall2 << std::endl;
+		}
+		out.close();
+	}
+};
+int main()
+{
+	Shape* arr[4];
+	arr[0] = new Square(1);
+	arr[1] = new Circle(2);
+	arr[2] = new Rectangle(2);
+	for (int i = 0; i < 3; ++i)
+	{
+		arr[i]->Load();
+		arr[i]->Show();
+	}
+	for (int i = 0; i < 3; ++i)
+	{
+		arr[i]->Save();
+	}
+}
