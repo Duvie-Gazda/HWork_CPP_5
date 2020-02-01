@@ -1,0 +1,65 @@
+#include<iostream>
+#include<fstream>
+class File
+{
+public:
+	void Display(const char* path)
+	{
+		std::ifstream in;
+		in.open(path);
+		if (!in.is_open())
+		{
+			std::cout << "ERROR";
+			in.close();
+			exit(1);
+		}
+		file(in);
+		in.close();
+	}
+	virtual void file(std::ifstream& in)
+	{
+		std::string str;
+		in >> str;
+		std::cout << str << std::endl;
+	}
+};
+class ChildFile :public File
+{
+public:
+	virtual void file(std::ifstream& in)override
+	{
+		std::string str;
+		in >> str;
+		for (int i = 0; i < str.length(); ++i)
+		{
+			std::cout << '\"' << str[i] << "\" is " << (int)str[i] << std::endl;
+		}
+	}
+};
+class ByteFile:public File
+{
+public:
+	virtual void file(std :: ifstream& in)override
+	{
+		std::string str;
+		in >> str;
+		int num;
+		for (int i = 0; i < str.length(); ++i)
+		{
+			//d = str[i];
+			//std::cout << '\"'<< str[i]<<"\" is "<< (byte)d<< std::endl;
+			int num = (int)str[i];
+			for (int y = 8; y > -1; --y)
+			{
+				std::cout << ((str[i]) & 1);
+			}
+			std::cout << std::endl;
+		}
+	}
+};
+
+int main()
+{
+	ByteFile s;
+	s.Display("h.txt");
+}
