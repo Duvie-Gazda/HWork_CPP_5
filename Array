@@ -4,7 +4,7 @@ class MyList
 {
 	struct Node
 	{
-		T& data;
+		T data;
 		Node* next;
 		Node* prev;
 		Node(const T& data_, Node* next_ = nullptr, Node* prev_ = nullptr) :data{ data_ }, next{ next_ }, prev{ prev_ }{};
